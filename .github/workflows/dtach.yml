@@ -5,7 +5,7 @@ name: dtach
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push *on all branches*,
-  # but only when the workflow defition has been changed.
+  # but only when this workflow defition has been changed.
   push:
     paths:
       - '.github/workflows/dtach.yml'

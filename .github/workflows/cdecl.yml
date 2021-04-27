@@ -2,10 +2,13 @@
 
 name: cdecl
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push *on all branches*
+  # but only when this workflow defition has been changed.
   push:
+    paths:
+      - '.github/workflows/cdecl.yml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -19,57 +22,31 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-          
-      - name: Enable multiarch support
-        run: |
-          sudo dpkg --add-architecture arm64
-          cat > ./sources.list << SOURCES
-          deb [arch=amd64] http://azure.archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
-          deb [arch=amd64] http://azure.archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
-          deb [arch=amd64] http://azure.archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
-          deb [arch=amd64] http://security.ubuntu.com/ubuntu focal-security main restricted universe multiverse
-          deb [arch=arm64] https://mirrors.xtom.com/ubuntu-ports/ focal main restricted universe multiverse
-          SOURCES
-          sudo mv ./sources.list /etc/apt/
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      # - name: Checkout cdecl Repo
-      #   uses: actions/checkout@v2
-      #   with:
-      #     repository: paul-j-lucas/cdecl
-          
-      # - name: Imma see what's inside
-      #   run: cat /etc/apt/sources.list
-          
-      - name: packagessss
-        run: sudo apt-get update
-        continue-on-error: true # maybe we need to ignore errors in this step?
+      - name: Checkout cdecl Repo
+        uses: actions/checkout@v2
+        with:
+          repository: paul-j-lucas/cdecl
 
-      - name: Install Cross-Compilers (not crossing this time tho)
-        run: |
-           sudo apt-get install \
-           gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu \
-           libncurses-dev:arm64 libncurses6:arm64 libncursesw6:arm64 libtinfo6:arm64 libc-dev:arm64 libc:arm64 libcrypt-dev:arm64 linux-libc-dev:arm64 \
-           libreadline-dev:arm64 libreadline8:arm64
+      - name: Build inside qemu
+        uses: uraimo/run-on-arch-action@v2.0.9
+        with:
+          arch: aarch64
+          distro: archarm_latest
+          githubToken: ${{ github.token }}
+          dockerRunArgs: |
+            --volume "${PWD}:/cdecl"
+          run: |
+            pacman -Syu --noconfirm --noprogressbar base-devel
+            cd /cdecl
+            autoreconf -fiv
+            ./configure
+            make
 
-      # LOL seems caches in this case are useless
-      #- name: Cache Save & Load
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ./.build/
-      #    key: build-intermediates
-
-      # - run: autoreconf -fiv
-      
-      # - name: Configuration
-      #  run: ./configure #--host=aarch64-linux-gnu
-        
-      # - name: Compilation
-      #  run: make
-        
-      #- name: Upload Artifact
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: Build Output
-      #    path: massdrop_shift_ykis.bin
-      #    if-no-files-found: error
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Output
+          path: src/cdecl
+          if-no-files-found: error
