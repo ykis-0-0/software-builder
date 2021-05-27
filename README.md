@@ -15,4 +15,4 @@ We have:
 | Repository   | Architecture |
 | ----------   | ------------ |
 | xPMo/dtach   | aarch64 |
-| paul-j-lucas | aarch64 |
+| paul-j-lucas/cdecl | aarch64 |
