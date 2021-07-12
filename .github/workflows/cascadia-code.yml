@@ -45,11 +45,11 @@ jobs:
         run: |
           mkdir -p out
           cd build
-          zip -r ../out/CascadiaCode.zip ttf otf woff2
+          cp --recursive --taget-directory=../out ./ttf ./otf ./woff2
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: Build Output
-          path: ./out/CascadiaCode.zip
+          path: ./out/
           if-no-files-found: error
