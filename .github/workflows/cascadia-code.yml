@@ -1,0 +1,54 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Cascadia Code
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    paths:
+      - '.github/workflows/cascadia.yml
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Cascadia repo
+        uses: actions/checkout@v2
+        with:
+          repository: microsoft/cascadia-code
+      - name: Refresh Packages index
+        run: sudo apt-get update
+      
+      - name: Install ttfautohint
+        run: sudo apt-get install ttfautohint
+      
+      - name: Install python modules
+        run: pip install -r ./requirements.txt ufolint
+        
+      - name: Lint Sources (as in [microsoft/cascadia]/.azure-pipelines.yml)
+        run: ufolint ./sources/*.ufo
+        
+      - name: Build Variable fonts only (as in [microsoft/cascadia]/.azure-pipelines.yml)
+        run: python ./build.py -W
+        
+      - name: Archive all fonts (as in [microsoft/cascadia]/.azure-pipelines.yml)
+        run: |
+          mkdir -p out
+          cd build
+          zip -r ../out/CascadiaCode.zip ttf otf woff2
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Output
+          path: ./out/CascadiaCode.zip
+          if-no-files-found: error
