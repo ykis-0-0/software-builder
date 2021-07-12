@@ -42,6 +42,7 @@ jobs:
         run: python ./build.py -W
         
       - name: Archive all fonts (as in [microsoft/cascadia]/.azure-pipelines.yml)
+        continue-on-error: true
         run: |
           mkdir -p out
           cd build
