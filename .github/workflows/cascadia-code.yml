@@ -45,7 +45,7 @@ jobs:
         run: |
           mkdir -p out
           cd build
-          cp --recursive --taget-directory=../out ./ttf ./otf ./woff2
+          cp --recursive --target-directory=../out ./ttf ./otf ./woff2
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
