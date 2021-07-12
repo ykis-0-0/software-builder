@@ -46,6 +46,7 @@ jobs:
           mkdir -p out
           cd build
           zip -r ../out/CascadiaCode.zip ttf otf woff2
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
