@@ -1,0 +1,35 @@
+# This is a basic workflow to help you get started with Actions
+
+name: manjaro-arm-minimal-rpi4-latest
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow when this definition itself has changed
+  push:
+    paths:
+      - '.github/workflows/manjaro-arm-minimal-rpi4.yml'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Get link of latest manjaro-arm image
+      id: manjaro-get-link
+      run: |
+        CURL_HEADERS="Accept: application/vnd.github.v3+json"
+        MANJARO_LATEST_RELEASE="https://api.github.com/repos/manjaro-arm/rpi4-images/releases/latest"
+        JQ_FILTER = '.assets | [.[] | select(.name | endswith(".xz")) | select(.name | contains("minimal"))] | .[].browser_download_url'
+        FILE_LINK=$(curl -H $CURL_HEADERS MANJARO_LATEST_RELEASE | jq --raw-output $JQ_FILTER)
+        echo "Image found at $FILE_LINK"
+        echo "::set-output name=MANJARO_IMAGE_LINK::$FILE_LINK"
+    - name: Acquire lastest image from repo manjaro-arm/rpi4-images
+      run: |
+        curl --head -o "manjaro-arm-minimal-rpi4-latest.img.xz" "${{ steps.manjaro-get-link.outputs.MANJARO_IMAGE_LINK }}"
