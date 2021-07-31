@@ -21,10 +21,16 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install bsdtar
+
     - name: Save current working directory
       id: pwd
       run: |
         echo "::set-output name=WORKSPACE_ROOT::$(pwd)"
+
     - name: Get link of latest manjaro-arm image
       id: link
       run: |
@@ -34,35 +40,42 @@ jobs:
         FILE_LINK=$(curl -H "$CURL_HEADERS" "$MANJARO_LATEST_RELEASE" | jq --raw-output "$JQ_FILTER")
         echo "Image found at $FILE_LINK"
         echo "::set-output name=MANJARO_IMAGE_LINK::$FILE_LINK"
+
     - name: Acquire lastest image from repo manjaro-arm/rpi4-images
       run: |
         curl -Lo "manjaro-arm-minimal-rpi4-latest.img.xz" "${{ steps.link.outputs.MANJARO_IMAGE_LINK }}"
+
     - name: Extract files from image
       run: |
         7z x ./manjaro-arm-minimal-rpi4-latest.img.xz
         touch info.txt
+
     - name: Mount image
       id: mount
       uses: damianperera/mount-image-action@v1
       with:
         imagePath: ./manjaro-arm-minimal-rpi4-latest.img
         mountPoint: ./mounted
+
     - name: Create tarball for /boot
       run: |
         pushd ${{ steps.mount.outputs.bootMountLocation }}
         sudo bsdtar --numeric-owner --format gnutar --one-file-system -cpf "${{ steps.pwd.outputs.WORKSPACE_ROOT }}/boot.tar" .
         popd
         echo "boot.tar: $(du -BM ./boot.tar)" >> info.txt
+
     - name: Create tarball for rootfs
       run: |
         pushd ${{ steps.mount.outputs.rootMountLocation }}
         sudo bsdtar --numeric-owner --format gnutar --one-file-system -cpf "${{ steps.pwd.outputs.WORKSPACE_ROOT }}/root.tar" .
         echo "root.tar: $(du -BM ./root.tar)" >> info.txt
         popd
+
     - name: Compress boot.tar
       run: |
         xz -e9 ./boot.tar
         sha512sum ./boot.tar.xz >> info.txt
+
     - name: Compress root.tar
       run: |
         xz -e9 ./root.tar
