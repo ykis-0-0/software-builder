@@ -68,8 +68,8 @@ jobs:
       run: |
         pushd ${{ steps.mount.outputs.rootMountLocation }}
         sudo bsdtar --numeric-owner --format gnutar --one-file-system -cpf "${{ steps.pwd.outputs.WORKSPACE_ROOT }}/root.tar" .
-        echo "root.tar: $(du -BM ./root.tar)" >> info.txt
         popd
+        echo "root.tar: $(du -BM ./root.tar)" >> info.txt
 
     - name: Compress boot.tar
       run: |
