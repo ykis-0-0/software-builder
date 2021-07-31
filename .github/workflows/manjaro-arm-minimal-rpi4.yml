@@ -32,7 +32,7 @@ jobs:
         echo "::set-output name=MANJARO_IMAGE_LINK::$FILE_LINK"
     - name: Acquire lastest image from repo manjaro-arm/rpi4-images
       run: |
-        curl -o "manjaro-arm-minimal-rpi4-latest.img.xz" "${{ steps.manjaro-get-link.outputs.MANJARO_IMAGE_LINK }}"
+        curl -Lo "manjaro-arm-minimal-rpi4-latest.img.xz" "${{ steps.manjaro-get-link.outputs.MANJARO_IMAGE_LINK }}"
     - name: Extract files from image
       run: |
         mkdir -p ./boot ./root
