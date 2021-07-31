@@ -37,5 +37,6 @@ jobs:
       run: |
         mkdir -p ./boot ./root
         7z x ./manjaro-arm-minimal-rpi4-latest.img.xz
-        sudo mount ./0.fat ./boot -o loop
-        sudo mount ./1.img ./root -o loop
+        udisksctl loop-setup --file ./0.fat
+        # sudo mount ./0.fat ./boot -o loop
+        # sudo mount ./1.img ./root -o loop
