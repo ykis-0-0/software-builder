@@ -4,8 +4,7 @@ name: cdecl
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push *on all branches*
-  # but only when this workflow defition has been changed.
+  # Triggers the workflow when this definition itself has changed
   push:
     paths:
       - '.github/workflows/cdecl.yml'
