@@ -73,12 +73,12 @@ jobs:
 
     - name: Compress boot.tar
       run: |
-        xz -e9 ./boot.tar
+        sudo xz -e9 ./boot.tar
         sha512sum ./boot.tar.xz >> info.txt
 
     - name: Compress root.tar
       run: |
-        xz -e9 ./root.tar
+        sudo xz -e9 ./root.tar
         sha512sum ./root.tar.xz >> info.txt
 
     - name: Upload Artifact
