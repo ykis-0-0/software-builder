@@ -27,6 +27,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: paul-j-lucas/cdecl
+          path: ./repo
 
       - name: Build inside qemu
         uses: uraimo/run-on-arch-action@v2.0.9
@@ -34,8 +35,9 @@ jobs:
           arch: aarch64
           distro: archarm_latest
           githubToken: ${{ github.token }}
-          dockerRunArgs: |
-            --volume "${PWD}:/cdecl"
+          dockerRunArgs: >
+            --volume "${PWD}/repo:/cdecl"
+            --volumt "${PWD}/out:/out}"
           run: |
             pacman -Syu --noconfirm --noprogressbar base-devel
             cd /cdecl
@@ -43,9 +45,15 @@ jobs:
             ./configure
             make
 
+      - name: Prepare build atrifacts
+        run: |
+          mkdir -p ./out/bin ./out/man/man1
+          cp ./repo/src/cdecl ./out/bin/
+          cp ./out/man/man1/c*decl.1 ./out/man/man1
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: Build Output
-          path: src/cdecl
+          path: ./out/
           if-no-files-found: error
