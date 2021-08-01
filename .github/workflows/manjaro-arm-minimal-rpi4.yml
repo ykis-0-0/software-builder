@@ -28,8 +28,7 @@ jobs:
 
     - name: Save current working directory
       id: pwd
-      run: |
-        echo "::set-output name=WORKSPACE_ROOT::$(pwd)"
+      run: echo "::set-output name=WORKSPACE_ROOT::$(pwd)"
 
     - name: Get link of latest manjaro-arm image
       id: link
@@ -42,8 +41,7 @@ jobs:
         echo "::set-output name=MANJARO_IMAGE_LINK::$FILE_LINK"
 
     - name: Acquire lastest image from repo manjaro-arm/rpi4-images
-      run: |
-        curl -Lo "manjaro-arm-minimal-rpi4-latest.img.xz" "${{ steps.link.outputs.MANJARO_IMAGE_LINK }}"
+      run: curl -Lo "manjaro-arm-minimal-rpi4-latest.img.xz" "${{ steps.link.outputs.MANJARO_IMAGE_LINK }}"
 
     - name: Extract files from image
       run: |
