@@ -48,8 +48,8 @@ jobs:
       - name: Prepare build atrifacts
         run: |
           sudo mkdir -p ./out/bin ./out/man/man1
-          cp ./repo/src/cdecl ./out/bin/
-          cp ./out/man/man1/c*decl.1 ./out/man/man1
+          sudo cp ./repo/src/cdecl ./out/bin/
+          sudo cp ./out/man/man1/c*decl.1 ./out/man/man1
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
