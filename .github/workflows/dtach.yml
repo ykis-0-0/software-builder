@@ -37,15 +37,16 @@ jobs:
 
       - name: Configuration
         run: |
-          pushd ./repo
+          cd ./repo
           ./configure --host=aarch64-linux-gnu
 
       - name: Compilation
-        run: make
+        run: |
+          cd ./repo
+          make
 
       - name: Prepare build artifacts
         run: |
-          popd
           mkdir -p ./out/bin ./out/man/man1
           cp ./repo/dtach ./out/bin/
           cp ./repo/dtach.1 ./out/man/man1/

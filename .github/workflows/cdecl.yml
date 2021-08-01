@@ -37,7 +37,7 @@ jobs:
           githubToken: ${{ github.token }}
           dockerRunArgs: >
             --volume "${PWD}/repo:/cdecl"
-            --volumt "${PWD}/out:/out}"
+            --volume "${PWD}/out:/out"
           run: |
             pacman -Syu --noconfirm --noprogressbar base-devel
             cd /cdecl
