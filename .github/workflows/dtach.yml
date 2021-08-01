@@ -2,7 +2,7 @@
 
 name: dtach
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow when this definition itself has changed
   push:
@@ -21,28 +21,38 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout cdecl Repo
         uses: actions/checkout@v2
         with:
           repository: xPMo/dtach
-          
+          path: ./repo
+
       - name: Refresh Packages index before installing
         run: sudo apt-get update
-          
+
       - name: Install Cross-Compilers
         run: sudo apt-get install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
-      
+
       - name: Configuration
-        run: ./configure --host=aarch64-linux-gnu
-        
+        run: |
+          pushd ./repo
+          ./configure --host=aarch64-linux-gnu
+
       - name: Compilation
         run: make
-        
+
+      - name: Prepare build artifacts
+        run: |
+          popd
+          mkdir -p ./out/bin ./out/man/man1
+          cp ./repo/dtach ./out/bin/
+          cp ./repo/dtach.1 ./out/man/man1/
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: Build Output
-          path: dtach
+          path: ./out/
           if-no-files-found: error
