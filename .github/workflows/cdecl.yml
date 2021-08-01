@@ -47,7 +47,7 @@ jobs:
 
       - name: Prepare build atrifacts
         run: |
-          mkdir -p ./out/bin ./out/man/man1
+          sudo mkdir -p ./out/bin ./out/man/man1
           cp ./repo/src/cdecl ./out/bin/
           cp ./out/man/man1/c*decl.1 ./out/man/man1
 
