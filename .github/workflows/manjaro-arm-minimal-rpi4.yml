@@ -1,0 +1,90 @@
+# This is a basic workflow to help you get started with Actions
+
+name: manjaro-arm-minimal-rpi4-latest
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow when this definition itself has changed
+  push:
+    paths:
+      - '.github/workflows/manjaro-arm-minimal-rpi4.yml'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install libarchive-tools
+
+    - name: Save current working directory
+      id: pwd
+      run: echo "::set-output name=WORKSPACE_ROOT::$(pwd)"
+
+    - name: Get link of latest manjaro-arm image
+      id: link
+      run: |
+        CURL_HEADERS="Accept: application/vnd.github.v3+json"
+        MANJARO_LATEST_RELEASE="https://api.github.com/repos/manjaro-arm/rpi4-images/releases/latest"
+        JQ_FILTER='.assets | [.[] | select(.name | endswith(".xz")) | select(.name | contains("minimal"))] | .[].browser_download_url'
+        FILE_LINK=$(curl -H "$CURL_HEADERS" "$MANJARO_LATEST_RELEASE" | jq --raw-output "$JQ_FILTER")
+        echo "Image found at $FILE_LINK"
+        echo "::set-output name=MANJARO_IMAGE_LINK::$FILE_LINK"
+
+    - name: Acquire lastest image from repo manjaro-arm/rpi4-images
+      run: curl -Lo "manjaro-arm-minimal-rpi4-latest.img.xz" "${{ steps.link.outputs.MANJARO_IMAGE_LINK }}"
+
+    - name: Extract files from image
+      run: |
+        7z x ./manjaro-arm-minimal-rpi4-latest.img.xz
+        touch info.txt
+
+    - name: Mount image
+      id: mount
+      uses: damianperera/mount-image-action@v1
+      with:
+        imagePath: ./manjaro-arm-minimal-rpi4-latest.img
+        mountPoint: ./mounted
+
+    - name: Create tarball for /boot
+      run: |
+        pushd ${{ steps.mount.outputs.bootMountLocation }}
+        sudo bsdtar --numeric-owner --format gnutar --one-file-system -cpf "${{ steps.pwd.outputs.WORKSPACE_ROOT }}/boot.tar" .
+        popd
+        echo "boot.tar: $(du -BM ./boot.tar)" >> info.txt
+
+    - name: Create tarball for rootfs
+      run: |
+        pushd ${{ steps.mount.outputs.rootMountLocation }}
+        sudo bsdtar --numeric-owner --format gnutar --one-file-system -cpf "${{ steps.pwd.outputs.WORKSPACE_ROOT }}/root.tar" .
+        popd
+        echo "root.tar: $(du -BM ./root.tar)" >> info.txt
+
+    - name: Compress boot.tar
+      run: |
+        sudo xz -e9 ./boot.tar
+        sha512sum ./boot.tar.xz >> info.txt
+
+    - name: Compress root.tar
+      run: |
+        sudo xz -e9 ./root.tar
+        sha512sum ./root.tar.xz >> info.txt
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build Output
+        path: |
+          ./boot.tar.xz
+          ./root.tar.xz
+          ./info.txt
+        if-no-files-found: error
