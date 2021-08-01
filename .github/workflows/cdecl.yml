@@ -35,11 +35,13 @@ jobs:
           arch: aarch64
           distro: archarm_latest
           githubToken: ${{ github.token }}
+          install: |
+            pacman -Syu --noconfirm --noprogressbar base-devel
           dockerRunArgs: >
             --volume "${PWD}/repo:/cdecl"
             --volume "${PWD}/out:/out"
           run: |
-            pacman -Syu --noconfirm --noprogressbar base-devel
+            pacman -Syu
             cd /cdecl
             autoreconf -fiv
             ./configure
@@ -49,7 +51,7 @@ jobs:
         run: |
           sudo mkdir -p ./out/bin ./out/man/man1
           sudo cp ./repo/src/cdecl ./out/bin/
-          sudo cp ./out/man/man1/c*decl.1 ./out/man/man1
+          sudo cp ./repo/man/man1/c*decl.1 ./out/man/man1
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
