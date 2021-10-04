@@ -29,14 +29,10 @@ jobs:
           repository: sqlite/sqlite
           path: ./repo
 
-      - name: Find vcvarsall.bat
-        shell: cmd
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\"
-
       - name: Build
         shell: cmd
         run: |
-          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
           cl .\repo\ext\misc\uuid.c -link -dll -out:.\uuid.dll
 
       - name: Upload Artifact
