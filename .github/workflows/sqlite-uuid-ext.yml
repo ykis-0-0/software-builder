@@ -33,7 +33,7 @@ jobs:
         shell: cmd
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cl .\repo\ext\misc\uuid.c -link -dll -out:.\uuid.dll
+          cl .\repo\ext\misc\uuid.c -I.\src\ -link -dll -out:.\uuid.dll
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
