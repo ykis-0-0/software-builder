@@ -29,7 +29,10 @@ jobs:
           repository: sqlite/sqlite
           path: ./repo
 
-      - name: Build inside qemu
+      - name: Find vcvarsall.bat
+        run: dir C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\
+
+      - name: Build
         run: cl .\repo\ext\misc\uuid.c -link -dll -out:.\uuid.dll
 
       - name: Upload Artifact
