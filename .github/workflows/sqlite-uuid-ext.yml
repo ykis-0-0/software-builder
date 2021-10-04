@@ -31,7 +31,7 @@ jobs:
 
       - name: Find vcvarsall.bat
         shell: cmd
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\"
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\"
 
       - name: Build
         shell: cmd
