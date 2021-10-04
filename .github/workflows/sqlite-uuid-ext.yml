@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: SQLite UUID extension for Windows
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow when this definition itself has changed
+  push:
+    paths:
+      - '.github/workflows/sqlite-uuid-ext.yml'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout SQLite GitHub Repo Mirror
+        uses: actions/checkout@v2
+        with:
+          repository: sqlite/sqilte
+          path: ./repo
+
+      - name: Build inside qemu
+        run: cl .\repo\ext\misc\uuid.c -link -dll -out:.\uuid.dll
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Output
+          path: .\uuid.dll
+          if-no-files-found: error
