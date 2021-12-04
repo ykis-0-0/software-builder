@@ -1,7 +1,26 @@
+FROM alpine:latest AS repo_fetcher
+
+RUN apk --no-cache add git
+
+ADD https://api.github.com/repos/paul-j-lucas/cdecl/commits?per_page=1 latest_commit
+RUN git clone https://www.github.com/paul-j-lucas/cdecl.git/ /repo
+
 FROM ubuntu:latest
 
-RUN apt update && apt install -y git gcc autoconf flex bison libreadline-dev make
+RUN apt update && apt install -y \
+  make gcc autoconf \
+  flex bison libreadline-dev
 
-COPY ./build.sh /
+COPY --from=repo_fetcher /repo /repo
 
-ENTRYPOINT ./build.sh
+WORKDIR /repo
+
+RUN autoreconf -fiv
+RUN ./configure
+RUN make -j6
+
+WORKDIR /
+
+COPY ./export.sh /
+
+CMD /bin/sh /export.sh
