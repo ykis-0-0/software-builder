@@ -10,16 +10,16 @@ reset item: (clean item)
   mkdir {{WORKSPACE_ROOT}}/{{item}}/out
 
 cdecl: (reset "cdecl")
-  docker build {{WORKSPACE_ROOT}}/cdecl --tag ykis-0-0/builder-cdecl
+  docker build --tag ykis-0-0/builder-cdecl {{WORKSPACE_ROOT}}/cdecl
   docker run --rm -it \
+  -u "$(id -u):$(id -g)" \
   -v {{WORKSPACE_ROOT}}/cdecl/out:/out \
-  --build-arg CHOWN "$(id -u):$(id -g)" \
   ykis-0-0/builder-cdecl
 
 dtach: (reset "dtach")
-  docker build {{WORKSPACE_ROOT}}/dtach --tag ykis-0-0/builder-dtach
+  docker build --tag ykis-0-0/builder-dtach {{WORKSPACE_ROOT}}/dtach
   docker run --rm -it \
+  -u "$(id -u):$(id -g)" \
   -v {{WORKSPACE_ROOT}}/dtach/out:/out \
-  --build-arg CHOWN "$(id -u):$(id -g)" \
   ykis-0-0/builder-dtach
 
