@@ -3,7 +3,7 @@ FROM alpine:latest AS repo_fetcher
 RUN apk --no-cache add git
 
 ADD https://api.github.com/repos/xPMo/dtach/commits?per_page=1 latest_commit
-RUN git clone https://www.github.com/xPMo/dtach.git/ /repo
+RUN git clone https://github.com/xPMo/dtach.git/ /repo
 
 FROM ubuntu:latest
 
