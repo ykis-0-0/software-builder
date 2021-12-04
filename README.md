@@ -5,14 +5,16 @@ Oh it isn't *that* really needed to read me🥱, just [go](https://github.com/yk
 
 &mdash; ykis-0-0, ~a fucking idiot with over-the-top arrogance~
 
-This repo is dedicated to exploit(?) GitHub Actions to build software without messing with my computer.
+This repo ~~is~~ has been dedicated to exploit(?) GitHub Actions to build software without messing with my computer, **now also with local building feature powered by Docker!** *(Terms and conditions apply. Not applicable to all items provided.)*
 
-Well it's free right? Then why not? 😉
+Well it's free *(only applicable to GitHub Actions build, Data and Electricity rates may apply for Docker builds)* right? Then why not? 😉
 
 You can make a PR if want to add more 💁‍♂️
 
 We have:
 | Repository   | Architecture |
 | ----------   | ------------ |
-| xPMo/dtach   | aarch64 |
-| paul-j-lucas/cdecl | aarch64 |
+| [xPMo/dtach](https://www.github.com/xPMo/dtach)   | aarch64 |
+| [paul-j-lucas/cdecl](https://www.github.com/paul-j-lucas/cdecl) | aarch64 |
+| [microsoft/cascadia-code](https://www.github.com/microsoft/cascadia-code) | Universal(?) ~~hey it's a TTF does arch really matter for that?~~ |
+| Manjaro ARM Minimal Image for Raspberry Pi 4B | aarch64 |
