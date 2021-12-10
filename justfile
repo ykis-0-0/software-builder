@@ -9,17 +9,16 @@ clean item:
 reset item: (clean item)
   mkdir {{WORKSPACE_ROOT}}/{{item}}/out
 
-cdecl: (reset "cdecl")
-  docker build --tag ykis-0-0/builder-cdecl {{WORKSPACE_ROOT}}/cdecl
+cdecl: (reset "cdecl") (build "cdecl")
+  cp {{WORKSPACE_ROOT}}/cdecl/out/* ~/
+  ln -s cdecl ~/bin/c++decl
+
+dtach: (reset "dtach") (build "dtach")
+  cp {{WORKSPACE_ROOT}}/dtach/out/ ~/
+
+build item:
+  docker build --tag ykis-0-0/builder-{{item}} {{WORKSPACE_ROOT}}/{{item}}
   docker run --rm -it \
   -u "$(id -u):$(id -g)" \
-  -v {{WORKSPACE_ROOT}}/cdecl/out:/out \
-  ykis-0-0/builder-cdecl
-
-dtach: (reset "dtach")
-  docker build --tag ykis-0-0/builder-dtach {{WORKSPACE_ROOT}}/dtach
-  docker run --rm -it \
-  -u "$(id -u):$(id -g)" \
-  -v {{WORKSPACE_ROOT}}/dtach/out:/out \
-  ykis-0-0/builder-dtach
-
+  -v {{WORKSPACE_ROOT}}/{{item}}/out/:/out/ \
+  ykis-0-0/builder-{{item}}

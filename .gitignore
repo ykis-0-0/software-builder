@@ -1,0 +1,2 @@
+# Output directory should never appear in this repo
+/*/out
