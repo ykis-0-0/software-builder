@@ -10,11 +10,11 @@ reset item: (clean item)
   mkdir {{WORKSPACE_ROOT}}/{{item}}/out
 
 cdecl: (reset "cdecl") (build "cdecl")
-  cp {{WORKSPACE_ROOT}}/cdecl/out/* ~/
+  cp -r {{WORKSPACE_ROOT}}/cdecl/out/* ~/
   ln -s cdecl ~/bin/c++decl
 
 dtach: (reset "dtach") (build "dtach")
-  cp {{WORKSPACE_ROOT}}/dtach/out/ ~/
+  cp -r {{WORKSPACE_ROOT}}/dtach/out/* ~/
 
 build item:
   docker build --tag ykis-0-0/builder-{{item}} {{WORKSPACE_ROOT}}/{{item}}
