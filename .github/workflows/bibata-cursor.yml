@@ -63,6 +63,7 @@ jobs:
           path: |
             ./themes/*-Windows
             ./themes/LICENSE
+          compression-level: 0
 
 
       - name: Upload Artifacts (XCursor)
@@ -73,6 +74,7 @@ jobs:
             ./themes
             ./themes/LICENSE
             !./themes/*-Windows
+          compression-level: 9
 
 
       - name: Upload Artifacts (Bitmaps)
@@ -80,3 +82,4 @@ jobs:
         with:
           name: bibata_cursor-bitmaps
           path: ./bitmaps
+          compression-level: 0
