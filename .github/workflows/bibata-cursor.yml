@@ -56,31 +56,30 @@ jobs:
       - name: Convert and Package
         run: yarn run build
 
-      - name: Inspect
-        run: |
-          mv -t /act-out/ ./bin/ ./themes/ ./bitmaps
-
       - name: Upload Artifacts (Windows)
         uses: actions/upload-artifact@v4
         with:
-          name: bibata_cursor-windows.zip
+          name: bibata_cursor-windows
           path: |
             ./themes/*-Windows
             ./themes/LICENSE
+          compression-level: 0
 
 
       - name: Upload Artifacts (XCursor)
         uses: actions/upload-artifact@v4
         with:
-          name: bibata_cursor-xcursor.zip
+          name: bibata_cursor-xcursor
           path: |
             ./themes
             ./themes/LICENSE
             !./themes/*-Windows
+          compression-level: 9
 
 
       - name: Upload Artifacts (Bitmaps)
         uses: actions/upload-artifact@v4
         with:
-          name: bibata_cursor-bitmaps.zip
+          name: bibata_cursor-bitmaps
           path: ./bitmaps
+          compression-level: 0
