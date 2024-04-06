@@ -59,7 +59,7 @@ jobs:
       - name: Upload Artifacts (Windows)
         uses: actions/upload-artifact@v4
         with:
-          name: bibata_cursor-windows.zip
+          name: bibata_cursor-windows
           path: |
             ./themes/*-Windows
             ./themes/LICENSE
@@ -68,7 +68,7 @@ jobs:
       - name: Upload Artifacts (XCursor)
         uses: actions/upload-artifact@v4
         with:
-          name: bibata_cursor-xcursor.zip
+          name: bibata_cursor-xcursor
           path: |
             ./themes
             ./themes/LICENSE
@@ -78,5 +78,5 @@ jobs:
       - name: Upload Artifacts (Bitmaps)
         uses: actions/upload-artifact@v4
         with:
-          name: bibata_cursor-bitmaps.zip
+          name: bibata_cursor-bitmaps
           path: ./bitmaps
