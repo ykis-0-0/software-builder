@@ -22,3 +22,9 @@ build item:
   -u "$(id -u):$(id -g)" \
   -v {{WORKSPACE_ROOT}}/{{item}}/out/:/out/ \
   ykis-0-0/builder-{{item}}
+
+workflows:
+  act --list
+
+flow workflow:
+  act -s GITHUB_TOKEN=${GITHUB_TOKEN} -W {{WORKSPACE_ROOT}}/.github/workflows/{{workflow}}.yml
