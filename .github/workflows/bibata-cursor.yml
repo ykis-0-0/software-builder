@@ -14,8 +14,81 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+
+  # Render the base graphics first
+  render:
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        shape: ['-Modern', '-Classic']
+        color: ['-Amber', '-Classic', '-Ice']
+        side: ['', '-Right']
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout bibata Repo
+        uses: actions/checkout@v4
+        with:
+          repository: ful1e5/Bibata_Cursor
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          rm yarn.lock
+          yarn install
+
+      - name: Enable parallelism
+        run: |
+          jq '.["Bibata${{matrix.shape}}${{matrix.color}}${{matrix.side}}"]' render.json | tee render.json
+
+      - name: Render Cursors
+        run: yarn run render
+
+      - name: Upload Artifacts (Bitmaps)
+        uses: actions/upload-artifact@v4
+        with:
+          name: partial-bitmaps${{matrix.shape}}${{matrix.color}}${{matrix.side}}
+          path: ./bitmaps
+          compression-level: 0
+
+  # Collect the rendered artifact for easy download
+  render-collect:
+
+    needs: render
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Fetch all results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: partial-bitmaps-*
+          path: ./bitmaps
+          merge-multiple: true
+
+      - name: Amagalation Re-upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: bibata_cursor-bitmaps
+          path: ./bitmaps
+          compression-level: 0
+
+  # Build cursors by a matrix
   build:
+
+    needs: render-collect
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -35,6 +108,11 @@ jobs:
           node-version: latest
           cache: yarn
 
+      # No node.js involvement except scripts, skip dependecies
+      # - name: Install dependencies
+      #   run: |
+      #     rm yarn.lock
+      #     yarn install
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -44,14 +122,6 @@ jobs:
 
       - name: Install required build dependency clickgen
         run: pip install clickgen
-
-      - name: Install dependencies
-        run: |
-          rm yarn.lock
-          yarn install
-
-      - name: Render Cursors
-        run: yarn run render
 
       - name: Convert and Package
         run: yarn run build
@@ -64,7 +134,6 @@ jobs:
             ./themes/*-Windows
             ./themes/LICENSE
           compression-level: 0
-
 
       - name: Upload Artifacts (XCursor)
         uses: actions/upload-artifact@v4
