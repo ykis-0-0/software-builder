@@ -53,6 +53,10 @@ jobs:
       - name: Render Cursors
         run: yarn run render
 
+      - name: Add 72px cursor
+        run: |
+          sed -i.bak '/-p windows -s 48/{p;s/48/72/}' build.sh
+
       - name: Convert and Package
         run: yarn run build
 
