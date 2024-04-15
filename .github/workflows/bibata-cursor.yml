@@ -49,7 +49,8 @@ jobs:
 
       - name: Enable parallelism
         run: |
-          jq '.["Bibata${{matrix.shape}}${{matrix.color}}${{matrix.side}}"]' render.json | tee render.json
+          jq '.["Bibata${{matrix.shape}}${{matrix.color}}${{matrix.side}}"]' render.json > render.json
+          cat render.json
 
       - name: Render Cursors
         run: yarn run render
