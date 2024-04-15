@@ -25,10 +25,9 @@ jobs:
 
     strategy:
       matrix:
-        shape: ['-Modern', '-Classic']
+        shape: ['-Modern', '-Original']
         color: ['-Amber', '-Classic', '-Ice']
         side: ['', '-Right']
-      max-parallel: 4
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
