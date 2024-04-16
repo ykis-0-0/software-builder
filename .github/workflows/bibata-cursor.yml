@@ -55,7 +55,7 @@ jobs:
 
       - name: Add 72px cursor variation
         run: |
-          sed -i.bak -e '/-p windows -s 48/{p;s/48/72/;s/Extra-Large/2XL/}' -e '/mkdir -p bin/q' build.sh
+          sed -i.bak -e '/-p windows -s 48/{p;s/48/72/;s/Extra-Large/2XL/p;s/72/80/;s/2XL/3XL/}' -e '/mkdir -p bin/q' build.sh
           >>build.sh echo <<APPEND
           echo Binaries packaging skipped.
 
